@@ -1,1 +1,1 @@
-# sdm-lunar-lab.
+# sdm-lunar-lab
