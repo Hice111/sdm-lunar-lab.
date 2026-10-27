@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лунная лаборатория SDM</title>
+<style>
+:root{--bg:#090d1b;--panel:#10182b;--panel2:#151f37;--line:#34436d;--text:#e7e9ff;--muted:#a5afd8;--glow:#a59aff;--cyan:#8de6ef;--good:#92e6c2;--bad:#ff9dba}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0%,#20264c 0,#0a1020 48%,#070a14 100%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+button{font:inherit;cursor:pointer;color:inherit;background:#202a4a;border:1px solid #4b5b91;border-radius:10px;padding:9px 12px;transition:.15s}button:hover{border-color:var(--glow);background:#30375f}button:disabled{opacity:.4;cursor:not-allowed}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 22px;border-bottom:1px solid var(--line);background:#0b1122eF;position:sticky;top:0;z-index:5}
+.brand{display:flex;gap:12px;align-items:center}.moon{font-size:34px;color:var(--glow)}h1{font:600 clamp(20px,3vw,30px)/1.1 Georgia,serif;margin:0;color:#d6d4ff}header p{margin:5px 0 0;color:var(--muted);font-size:12px}.stats{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.stat{border:1px solid var(--line);background:#111a30;border-radius:12px;padding:8px 12px;min-width:130px}.stat small{display:block;color:var(--muted)}.bar{height:7px;background:#252d4d;border-radius:10px;overflow:hidden;margin-top:6px}.bar span{display:block;height:100%;background:linear-gradient(90deg,#766be9,#9de9f1);width:0%}
+nav{display:flex;gap:7px;padding:12px 20px;overflow:auto;border-bottom:1px solid #263252}nav button{white-space:nowrap;background:transparent;border-color:transparent;color:var(--muted)}nav button.active{color:white;background:#252c51;border-color:#5a609b}
+main{max-width:1450px;margin:auto;padding:16px;display:grid;grid-template-columns:minmax(230px, .85fr) minmax(330px,1.6fr) minmax(250px,1fr);gap:14px}
+.panel{background:linear-gradient(160deg,#131d34ee,#0d1426f5);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 10px 35px #0003;min-width:0}.panel h2{font:600 21px Georgia,serif;margin:0 0 6px}.sub{color:var(--muted);font-size:13px;margin:0 0 13px}.inventory{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ingredient{padding:10px 6px;min-height:100px;text-align:center;background:#111a30;border:1px solid #334269;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}.ingredient .emoji{font-size:28px}.ingredient small{color:var(--muted)}.ingredient.selected{border-color:var(--glow);box-shadow:0 0 0 1px #8f83ff,0 0 18px #8f83ff25;background:#24284b}
+.filters{display:flex;gap:5px;margin-bottom:10px}.filters button{padding:6px 8px;font-size:12px;flex:1}
+.workbench{min-height:410px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 70%,#44377766,transparent 50%),linear-gradient(160deg,#11182c,#0a1020)}.workbench:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 49.8%,#ffffff06 50%,transparent 50.2%),linear-gradient(0deg,transparent 49.8%,#ffffff06 50%,transparent 50.2%);background-size:42px 42px;pointer-events:none}
+.slots{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;position:relative}.slot{width:92px;height:94px;display:grid;place-items:center;text-align:center;border:1px dashed #626da0;border-radius:14px;background:#0d1428c9;font-size:12px;color:var(--muted)}.slot .emoji{font-size:27px;display:block}.cauldron{font-size:66px;margin:14px 0 5px;filter:drop-shadow(0 0 18px #9d72ff99)}.arrow{font-size:25px;color:var(--glow)}.result{min-height:62px;text-align:center;color:var(--muted);max-width:340px}.result strong{display:block;color:var(--cyan);font-size:18px}.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;position:relative}.primary{background:linear-gradient(120deg,#5147a4,#374e87);border-color:#8178db}.message{min-height:24px;text-align:center;color:var(--good);font-size:13px;margin-top:10px}.message.error{color:var(--bad)}
+.rightcol{display:flex;flex-direction:column;gap:14px}.event{border:1px solid #455486;border-radius:12px;padding:12px;background:#121a30}.event strong{display:block}.quest{border:1px solid #303e63;border-radius:11px;padding:11px;margin-top:9px;background:#0e1629}.questhead{display:flex;justify-content:space-between;gap:8px}.quest p{font-size:13px;color:var(--muted);margin:6px 0}.quest small{color:var(--cyan)}.locked{opacity:.65}.locked::before{content:"🔒 ";} .list{display:grid;gap:8px}.entry{border-bottom:1px solid #283553;padding:9px 0}.entry:last-child{border:0}.entry p{margin:3px 0;color:var(--muted);font-size:13px}
+.full{grid-column:1/-1}.hidden{display:none!important}.notice{border-left:3px solid var(--glow);padding:9px 12px;background:#171c38;color:var(--muted);font-size:13px;border-radius:0 8px 8px 0}.footer{max-width:1450px;margin:0 auto;padding:0 16px 20px;color:#8792bd;font-size:12px}.tag{font-size:11px;color:var(--cyan);border:1px solid #3a6275;border-radius:20px;padding:3px 8px}
+@media(max-width:1000px){main{grid-template-columns:1fr 1.4fr}.rightcol{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}.rightcol .panel:last-child{grid-column:1/-1}}
+@media(max-width:650px){header{align-items:flex-start;flex-direction:column}.stats{width:100%}.stat{flex:1}main{grid-template-columns:1fr;padding:10px}.rightcol{grid-column:auto;display:flex}.full{grid-column:auto}.workbench{min-height:340px}.inventory{grid-template-columns:repeat(3,minmax(0,1fr))}.ingredient{min-height:86px;font-size:12px}.slot{width:78px;height:85px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="moon">☾</div><div><h1>Лунная лаборатория</h1><p>SDM / souls of the damned moon · прототип</p></div></div>
+  <div class="stats">
+    <div class="stat"><small>Уровень исследования</small><strong id="level">1</strong><div class="bar"><span id="xpbar"></span></div><small id="xptext">0 / 100 опыта</small></div>
+    <div class="stat"><small>Лунная эссенция</small><strong id="essence">0</strong></div>
+  </div>
+</header>
+<nav id="nav">
+  <button class="active" data-tab="lab">⚗ Лаборатория</button><button data-tab="recipes">Книга рецептов</button><button data-tab="journal">Журнал открытий</button><button data-tab="quests">Задания</button><button data-tab="hints">Подсказки</button>
+</nav>
+<main id="labView">
+  <section class="panel">
+    <h2>Ингредиенты</h2><p class="sub">Нажми на предмет, чтобы добавить его в реакцию. Выбери до трёх.</p>
+    <div class="filters"><button data-filter="all">Все</button><button data-filter="solution">Растворы</button><button data-filter="crystal">Кристаллы</button></div>
+    <div class="inventory" id="inventory"></div>
+  </section>
+  <section class="panel">
+    <h2>Создание соединений</h2><p class="sub">Порядок не важен. Не все рецепты открыты — исследуй и записывай результаты.</p>
+    <div class="workbench">
+      <div class="slots" id="slots"></div><div class="cauldron">⚗</div><div class="arrow">↓</div>
+      <div class="result" id="result">Добавь два или три ингредиента</div>
+      <div class="actions"><button id="mix" class="primary">Начать соединение</button><button id="clear">Очистить стол</button></div>
+      <div class="message" id="message"></div>
+    </div>
+    <h2 style="margin-top:14px">Последние открытия</h2><div id="recent" class="list"></div>
+  </section>
+  <div class="rightcol">
+    <section class="panel"><h2>Режим лаборатории</h2><div class="event"><span class="tag" id="openTag">ДЕМО-РЕЖИМ</span><p style="margin:8px 0 0">В настоящем клане можно установить расписание, например суббота, 18:00–20:00 по Москве.</p></div><p class="sub" style="margin-top:10px">В прототипе лаборатория всегда доступна для тестирования.</p></section>
+    <section class="panel"><h2>Задания недели</h2><p class="sub">Выполняй по порядку. Новая неделя не пропустит незавершённое задание.</p><div id="questMini"></div></section>
+    <section class="panel"><h2>Доступные подсказки</h2><div id="hintMini" class="list"></div></section>
+  </div>
+</main>
+<main id="otherView" class="hidden"><section class="panel full" id="otherPanel"></section></main>
+<div class="footer">Демо хранит прогресс только в этом браузере. Для общего кланового сайта понадобятся серверная база данных, аккаунты и защита от изменения прогресса.</div>
+<script>
+const ingredients = [
+ {id:'essence',name:'Лунная эссенция',emoji:'💎',kind:'crystal',qty:5},
+ {id:'water',name:'Вода',emoji:'⚗️',kind:'solution',qty:8},
+ {id:'salt',name:'Соль',emoji:'❄️',kind:'crystal',qty:8},
+ {id:'ember',name:'Огненная пыль',emoji:'🔶',kind:'crystal',qty:3},
+ {id:'ice',name:'Ледяной кристалл',emoji:'🧊',kind:'crystal',qty:4},
+ {id:'herb',name:'Лунная трава',emoji:'🌿',kind:'other',qty:6},
+ {id:'acid',name:'Серная кислота',emoji:'🧪',kind:'solution',qty:2},
+ {id:'spirit',name:'Спирт',emoji:'🧴',kind:'solution',qty:4},
+ {id:'honey',name:'Мёд',emoji:'🍯',kind:'solution',qty:3},
+ {id:'ash',name:'Пепел',emoji:'🌑',kind:'other',qty:3},
+ {id:'mushroom',name:'Сумрачный гриб',emoji:'🍄',kind:'other',qty:2},
+ {id:'moonlight',name:'Свет луны',emoji:'🌙',kind:'other',qty:1}
+];
+const products = {
+ 'essence+salt+water':{id:'tea_base',name:'Первоначальная жидкость чая',emoji:'🍵',desc:'Слабая основа для настоев.',xp:20,level:1},
+ 'herb+water':{id:'herb_water',name:'Травяной настой',emoji:'🍃',desc:'Простой настой лунной травы.',xp:15,level:1},
+ 'ash+water':{id:'ash_water',name:'Пепельная взвесь',emoji:'🌫️',desc:'Мутная смесь с осадком.',xp:15,level:1},
+ 'essence+ice':{id:'cold_glow',name:'Холодное сияние',emoji:'🔹',desc:'Кристалл удержал слабый лунный свет.',xp:20,level:2},
+ 'honey+herb_water':{id:'healing',name:'Лечебный настой',emoji:'🧉',desc:'Мягкая основа для дальнейших исследований.',xp:30,level:2},
+ 'ash+ember':{id:'black_powder',name:'Чёрный порошок',emoji:'⚫',desc:'Реакция нестабильна; изучи свойства вещества.',xp:25,level:2},
+ 'cold_glow+healing+tea_base':{id:'rot_cure',name:'Лекарство от гниения',emoji:'🌌',desc:'Редкое соединение. Легенда лаборатории SDM.',xp:100,level:6}
+};
+const quests = [
+ {title:'Сбор ингредиентов',desc:'Соверши 2 успешных соединения.',target:2,kind:'mix',xp:30},
+ {title:'Первые наблюдения',desc:'Открой 2 разных вещества.',target:2,kind:'discover',xp:40},
+ {title:'Записи исследователя',desc:'Открой вкладку журнала и прочитай свои открытия.',target:1,kind:'journal',xp:30,level:2},
+ {title:'Тайны кристаллов',desc:'Достигни 3 уровня и открой подсказку.',target:1,kind:'hint',xp:50,level:3}
+];
+const hintData=[
+ {level:2,title:'Свойства кристаллов',text:'Некоторые кристаллы меняют свойства жидкости. Попробуй сочетать холодный ингредиент с лунной эссенцией.'},
+ {level:3,title:'Основа настоя',text:'Для некоторых настоев нужны и жидкая основа, и растительный ингредиент.'},
+ {level:4,title:'Стабилизация',text:'Мёд способен смягчать отдельные смеси. Не каждый рецепт требует максимального числа ингредиентов.'},
+ {level:6,title:'Лекарство от гниения',text:'Секретное лекарство требует нескольких промежуточных веществ. Изучи их по отдельности, прежде чем соединять.'}
+];
+let state={qty:{},selected:[],discovered:[],history:[],xp:0,essence:0,mixes:0,questProgress:{},completed:[],journalRead:false,hintsRead:[]};
+ingredients.forEach(i=>state.qty[i.id]=i.qty);
+try{const saved=localStorage.getItem('sdmLabDemo');if(saved){const parsed=JSON.parse(saved);state={...state,...parsed,qty:{...state.qty,...parsed.qty}}}}catch(e){}
+let filter='all',tab='lab';
+function save(){localStorage.setItem('sdmLabDemo',JSON.stringify(state))}
+function level(){return 1+Math.floor(state.xp/100)}
+function canon(ids){return ids.slice().sort().join('+')}
+function productFor(ids){return products[canon(ids)]||null}
+function invItem(id){return ingredients.find(i=>i.id===id)||state.discovered.find(i=>i.id===id)}
+function renderInventory(){
+ const box=document.getElementById('inventory');box.innerHTML='';
+ const allItems=[...ingredients,...state.discovered.map(p=>({...p,kind:'product'}))];
+ allItems.filter(i=>(filter==='all'||i.kind===filter||(filter==='other'&&i.kind==='product'))&&(state.qty[i.id]||0)>0).forEach(i=>{
+ const b=document.createElement('button');b.className='ingredient'+(state.selected.includes(i.id)?' selected':'');b.disabled=state.qty[i.id]<=0;
+ b.innerHTML=`<span class="emoji">${i.emoji}</span><strong>${i.name}</strong><small>× ${state.qty[i.id]||0}</small>`;
+ b.onclick=()=>{if(state.selected.includes(i.id))state.selected=state.selected.filter(x=>x!==i.id);else if(state.selected.length<3)state.selected.push(i.id);else msg('Можно выбрать максимум три ингредиента.',true);render();save()};box.appendChild(b)
+ });
+}
+function renderSlots(){
+ const box=document.getElementById('slots');box.innerHTML='';
+ for(let n=0;n<3;n++){const id=state.selected[n],it=id&&invItem(id);const d=document.createElement('div');d.className='slot';d.innerHTML=it?`<span><span class="emoji">${it.emoji}</span>${it.name}</span>`:'＋';box.appendChild(d)}
+}
+function msg(t,error=false){const m=document.getElementById('message');m.textContent=t;m.className='message'+(error?' error':'')}
+function mix(){
+ if(state.selected.length<2){msg('Для реакции выбери хотя бы два ингредиента.',true);return}
+ const ids=state.selected.slice(),key=canon(ids),p=productFor(ids);
+ if(!p){msg('Реакция не дала известного результата. Запись внесена в журнал.',true);state.history.unshift({name:'Неизвестная реакция',emoji:'❔',ingredients:ids.map(x=>invItem(x).name),time:new Date().toLocaleDateString('ru-RU'),unknown:true});state.mixes++;updateQuest('mix',1);state.xp+=5;state.selected=[];save();render();return}
+ if(level()<p.level){msg(`Для этой реакции нужен ${p.level} уровень исследования.`,true);return}
+ ids.forEach(id=>state.qty[id]--);
+ const fresh=!state.discovered.some(x=>x.id===p.id);
+ if(fresh){state.discovered.push(p);state.qty[p.id]=0;state.essence+=5;state.xp+=p.xp;updateQuest('discover',1)}
+ state.qty[p.id]=(state.qty[p.id]||0)+1;
+ state.history.unshift({name:p.name,emoji:p.emoji,ingredients:ids.map(x=>invItem(x)?.name||x),time:new Date().toLocaleDateString('ru-RU')});
+ state.history=state.history.slice(0,30);state.mixes++;updateQuest('mix',1);
+ document.getElementById('result').innerHTML=`<strong>${p.emoji} ${p.name}</strong>${p.desc}<br><small>+${p.xp} опыта${fresh?' · +5 эссенции':' · повторное соединение'}</small>`;
+ state.selected=[];msg(fresh?'Новое вещество открыто! Оно записано в журнал.':'Соединение повторено.');save();render()
+}
+function updateQuest(kind,n){const idx=quests.findIndex((q,i)=>q.kind===kind&&!state.completed.includes(i));if(idx>=0)state.questProgress[idx]=Math.min(quests[idx].target,(state.questProgress[idx]||0)+n)}
+function questCard(q,i,compact=false){
+ const done=state.completed.includes(i),unlocked=level()>=(q.level||1),prog=state.questProgress[i]||0;
+ return `<div class="quest ${!unlocked?'locked':''}"><div class="questhead"><strong>${i+1}. ${q.title}</strong><span class="tag">${done?'Готово':unlocked?`${prog}/${q.target}`:`ур. ${q.level}`}</span></div><p>${q.desc}</p>${!done&&unlocked?`<button onclick="doQuest(${i})">Отметить этап</button>`:''}${done?'<small>Награда получена</small>':''}</div>`
+}
+function doQuest(i){
+ const q=quests[i];if(state.completed.includes(i)||level()<(q.level||1))return;
+ if(q.kind==='journal'&&!state.journalRead){msg('Сначала открой вкладку «Журнал открытий».',true);return}
+ if(q.kind==='hint'&&!state.hintsRead.some(x=>x===3)){msg('Сначала открой доступную подсказку 3 уровня.',true);return}
+ if((state.questProgress[i]||0)<q.target){msg('Сначала выполни условие задания.',true);return}
+ state.completed.push(i);state.xp+=q.xp;state.essence+=10;msg(`Задание выполнено: +${q.xp} опыта и +10 эссенции.`);save();render()
+}
+function renderQuests(){document.getElementById('questMini').innerHTML=quests.map((q,i)=>questCard(q,i,true)).join('')}
+function renderHints(){
+ const unlocked=hintData.filter(h=>level()>=h.level);
+ document.getElementById('hintMini').innerHTML=unlocked.length?unlocked.map(h=>`<div class="entry"><strong>${h.title}</strong><p>${h.text}</p><button onclick="readHint(${h.level})">${state.hintsRead.includes(h.level)?'Прочитано':'Открыть запись'}</button></div>`).join(''):'<p class="sub">Подсказки закрыты. Повышай уровень исследования.</p>'
+}
+function readHint(l){if(!state.hintsRead.includes(l)){state.hintsRead.push(l);state.xp+=5;msg('Запись добавлена в журнал. +5 опыта.');}else msg('Эта запись уже прочитана.');save();render()}
+function renderRecent(){const r=document.getElementById('recent');const arr=state.history.slice(0,4);r.innerHTML=arr.length?arr.map(h=>`<div class="entry">${h.emoji} <strong>${h.name}</strong><p>${h.ingredients.join(' + ')}</p></div>`).join(''):'<p class="sub">Здесь появятся первые открытия.</p>'}
+function renderStats(){document.getElementById('level').textContent=level();document.getElementById('essence').textContent=state.essence;document.getElementById('xptext').textContent=`${state.xp%100} / 100 опыта`;document.getElementById('xpbar').style.width=(state.xp%100)+'%'}
+function renderOther(){
+ const panel=document.getElementById('otherPanel');
+ if(tab==='recipes'){panel.innerHTML='<h2>Книга рецептов</h2><p class="sub">Показываются только уже открытые результаты. Секретные рецепты не раскрываются заранее.</p>'+state.discovered.map(p=>`<div class="entry"><strong>${p.emoji} ${p.name}</strong><p>${p.desc}</p></div>`).join('')+'<div class="notice">Совет: записывай ингредиенты каждой успешной реакции — промежуточные вещества могут пригодиться позже.</div>'}
+ if(tab==='journal'){state.journalRead=true;updateQuest('journal',1);panel.innerHTML='<h2>Журнал открытий</h2><p class="sub">История экспериментов, включая неудачные реакции.</p>'+state.history.map(h=>`<div class="entry"><strong>${h.emoji} ${h.name}</strong><p>${h.ingredients.join(' + ')} · ${h.time}</p></div>`).join('')+'<div class="notice">Здесь можно хранить наблюдения и заметки участников. В полной версии журнал будет сохраняться отдельно для каждого игрока.</div>';save()}
+ if(tab==='quests'){panel.innerHTML='<h2>Задания исследователя</h2><p class="sub">В этом прототипе задания открываются по уровню и выполняются по порядку.</p>'+quests.map((q,i)=>questCard(q,i)).join('')+'<div class="notice">В полной версии недельный таймер будет серверным: обновление не произойдёт, пока предыдущая цепочка заданий не завершена.</div>'}
+ if(tab==='hints'){panel.innerHTML='<h2>Архив подсказок</h2><p class="sub">Записи открываются по уровню исследования.</p>'+hintData.map(h=>level()>=h.level?`<div class="entry"><strong>Уровень ${h.level}: ${h.title}</strong><p>${h.text}</p><button onclick="readHint(${h.level})">${state.hintsRead.includes(h.level)?'Прочитано':'Прочитать (+5 опыта)'}</button>`:`<div class="entry locked"><strong>Скрытая запись</strong><p>Откроется на ${h.level} уровне исследования.</p></div>`).join('')}
+ }
+function render(){
+ renderInventory();renderSlots();renderStats();renderQuests();renderHints();renderRecent();
+ if(tab!=='lab'){document.getElementById('labView').classList.add('hidden');document.getElementById('otherView').classList.remove('hidden');renderOther()}else{document.getElementById('labView').classList.remove('hidden');document.getElementById('otherView').classList.add('hidden')}
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));render()});
+document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;renderInventory()});
+document.getElementById('mix').onclick=mix;
+document.getElementById('clear').onclick=()=>{state.selected=[];document.getElementById('result').textContent='Добавь два или три ингредиента';msg('Стол очищен.');renderSlots()};
+render();
+</script>
+</body>
+</html>
