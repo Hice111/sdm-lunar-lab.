@@ -64,7 +64,7 @@ function names(ids){return ids.map(id=>{const i=ING.find(x=>x[0]===id);return i?
 function keyFor(ids){return [...ids].sort().join('|')}
 function same(a,b){return keyFor(a)===keyFor(b)}
 function unlocked(i){return i[3]<=state.level}
-function xpNeed(){return state.level===1?60:100+(state.level-2)*25}
+function xpNeed(){return state.level===1?60:state.level===2?65:100+(state.level-3)*25}
 function addXP(n){state.xp+=n;save()}
 function showResult(title,desc,icon='⚗️'){document.getElementById('mixResult').innerHTML=`<div class="rarity">Результат эксперимента</div><h3>${icon} ${esc(title)}</h3><div>${esc(desc)}</div>`}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
